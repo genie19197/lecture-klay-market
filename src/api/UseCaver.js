@@ -2,31 +2,18 @@ import Caver from "caver-js";
 import MARKET_ABI from "../abi/market.json";
 import NFT_ABI from "../abi/nft.json";
 
-import {
-  NFT_CONTRACT_ADDRESS,
-  MARKET_CONTRACT_ADDRESS,
-  CHAIN_ID,
-  ACCESS_KEY_ID,
-  SECRET_ACCESS_KEY,
-} from "../constants.baobab";
+import { NFT_CONTRACT_ADDRESS, MARKET_CONTRACT_ADDRESS, CHAIN_ID, ACCESS_KEY_ID, SECRET_ACCESS_KEY } from "../constants";
 
 const option = {
   headers: [
     {
       name: "Authorization",
-      value:
-        "Basic " +
-        Buffer.from(ACCESS_KEY_ID + ":" + SECRET_ACCESS_KEY).toString("base64"),
+      value: "Basic " + Buffer.from(ACCESS_KEY_ID + ":" + SECRET_ACCESS_KEY).toString("base64"),
     },
     { name: "x-chain-id", value: CHAIN_ID },
   ],
 };
-const caver = new Caver(
-  new Caver.providers.HttpProvider(
-    "https://node-api.klaytnapi.com/v1/klaytn",
-    option
-  )
-);
+const caver = new Caver(new Caver.providers.HttpProvider("https://node-api.klaytnapi.com/v1/klaytn", option));
 
 const NFTcontract = new caver.contract(NFT_ABI, NFT_CONTRACT_ADDRESS);
 const MarketContract = new caver.contract(MARKET_ABI, MARKET_CONTRACT_ADDRESS);
@@ -55,10 +42,11 @@ export const fetchCardsOf = async (address) => {
     cardUris.push(id);
   }
   console.log(`[CardURI LIST]${cardUris}`);
-  return {
-    ids: cardIds,
-    uris: cardUris,
-  };
+  const nfts = [];
+  for (let i = 0; i < balance; i++) {
+    nfts.push({ uri: cardUris[i], id: cardIds[i] });
+  }
+  return nfts;
 };
 
 export const mintCardWithURI = async (toAddress, tokenId, uri, privatekey) => {
@@ -66,12 +54,10 @@ export const mintCardWithURI = async (toAddress, tokenId, uri, privatekey) => {
     const deployer = caver.wallet.keyring.createFromPrivateKey(privatekey);
     // caver.wallet.add(deployer);
     addDeployer(deployer);
-    const receipt = await NFTcontract.methods
-      .mintWithTokenURI(toAddress, tokenId, uri)
-      .send({
-        from: deployer.address,
-        gas: "0x4bfd200",
-      });
+    const receipt = await NFTcontract.methods.mintWithTokenURI(toAddress, tokenId, uri).send({
+      from: deployer.address,
+      gas: "0x4bfd200",
+    });
     console.log(receipt);
     return true;
   } catch (e) {
@@ -85,12 +71,10 @@ export const listingCard = async (tokenId, privatekey) => {
   try {
     const deployer = caver.wallet.keyring.createFromPrivateKey(privatekey);
     addDeployer(deployer);
-    const receipt = await NFTcontract.methods
-      .safeTransferFrom(deployer.address, MARKET_CONTRACT_ADDRESS, tokenId)
-      .send({
-        from: deployer.address,
-        gas: "0x4bfd200",
-      });
+    const receipt = await NFTcontract.methods.safeTransferFrom(deployer.address, MARKET_CONTRACT_ADDRESS, tokenId).send({
+      from: deployer.address,
+      gas: "0x4bfd200",
+    });
     console.log(receipt);
     return true;
   } catch (e) {
@@ -103,13 +87,11 @@ export const buyCard = async (tokenId, privatekey) => {
   try {
     const deployer = caver.wallet.keyring.createFromPrivateKey(privatekey);
     addDeployer(deployer);
-    const receipt = await MarketContract.methods
-      .buyNFT(tokenId, NFT_CONTRACT_ADDRESS)
-      .send({
-        from: deployer.address,
-        value: 10 ** 16,
-        gas: "0x4bfd200",
-      });
+    const receipt = await MarketContract.methods.buyNFT(tokenId, NFT_CONTRACT_ADDRESS).send({
+      from: deployer.address,
+      value: 10 ** 16,
+      gas: "0x4bfd200",
+    });
     console.log(receipt);
     return true;
   } catch (e) {
@@ -119,9 +101,7 @@ export const buyCard = async (tokenId, privatekey) => {
 };
 export const getBalance = (address) => {
   return caver.rpc.klay.getBalance(address).then((res) => {
-    const balance = caver.utils.convertFromPeb(
-      caver.utils.hexToNumberString(res)
-    );
+    const balance = caver.utils.convertFromPeb(caver.utils.hexToNumberString(res));
     return balance;
   });
 };
