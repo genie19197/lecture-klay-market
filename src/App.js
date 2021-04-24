@@ -87,7 +87,7 @@ function App() {
         {myAddress}
         <br />
         <Alert onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#f40075", fontSize: 25 }}>
-          {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "여기를 눌러 지갑을 연동하세요"}
+          {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "지갑 연동하기"}
         </Alert>
         <div style={{ color: "#EEEEEE", fontSize: 25, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>전체</div>
         {qrvalue !== "DEFAULT" ? (
