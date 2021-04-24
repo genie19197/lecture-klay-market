@@ -116,7 +116,7 @@ function App() {
                         onClickCard(nfts[rowIndex * 2 + 1].id);
                       }}
                     >
-                      <Card.Img src={nfts[rowIndex * 2 + 1].uri} />
+                      <Card.Img className="img-responsive" src={nfts[rowIndex * 2 + 1].uri} />
                     </Card>
                   ) : null}
                 </Col>
@@ -194,7 +194,7 @@ function App() {
             </Button>
           </Modal.Footer>
         </Modal>
-        <nav style={{ backgroundColor: "#BBBBBB", height: 45 }} className="navbar fixed-bottom navbar-light" role="navigation">
+        <nav style={{ backgroundColor: "#1b1717", height: 45 }} className="navbar fixed-bottom navbar-light" role="navigation">
           <Nav className="w-100">
             <div className=" d-flex flex-row justify-content-around w-100">
               <div
