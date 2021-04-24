@@ -108,6 +108,7 @@ function App() {
                   >
                     <Card.Img src={nfts[rowIndex * 2].uri} />
                   </Card>
+                  [{nfts[rowIndex * 2].id}]NFT
                 </Col>
                 <Col>
                   {nfts.length > rowIndex * 2 + 1 ? (
@@ -119,6 +120,7 @@ function App() {
                       <Card.Img className="img-responsive" src={nfts[rowIndex * 2 + 1].uri} />
                     </Card>
                   ) : null}
+                  {nfts.length > rowIndex * 2 + 1 ? <>[{nfts[rowIndex * 2 + 1].id}]NFT</> : null}
                 </Col>
               </Row>
             ))}
