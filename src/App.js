@@ -14,7 +14,7 @@ const DEFAULT_ADDRESS = "0x0000000000000000000000000000000000000000";
 function App() {
   const [nfts, setNfts] = useState([]); // {uri, id}
   const [myBalance, setMyBalance] = useState("0");
-  const [myAddress, setMyAddress] = useState("0x0000000000000000000000000000000000000000");
+  const [myAddress, setMyAddress] = useState(DEFAULT_ADDRESS);
   // UI
   const [qrvalue, setQrvalue] = useState("DEFAULT");
   const [tab, setTab] = useState("MARKET");
@@ -29,11 +29,17 @@ function App() {
   const rows = nfts.slice(nfts.length / 2);
   //
   const getUserData = () => {
-    Klip.getAddress(setQrvalue, async (address) => {
-      setMyAddress(address);
-      const _balance = await Caver.getBalance(address);
-      setMyBalance(_balance);
+    setModalProps({
+      title: "Klip 지갑을 연동하시겠습니까?",
+      onConfirm: () => {
+        Klip.getAddress(setQrvalue, async (address) => {
+          setMyAddress(address);
+          const _balance = await Caver.getBalance(address);
+          setMyBalance(_balance);
+        });
+      },
     });
+    setShowModal(true);
   };
   const fetchMarketNFTs = async () => {
     const _nfts = await Caver.fetchCardsOf(MARKET_CONTRACT_ADDRESS);
@@ -73,8 +79,6 @@ function App() {
     // Initialize Market
     getUserData();
     fetchMarketNFTs();
-    // Get Market's cards
-    // mintCardWithURI(addr, "104", "cool", privatekey);
   }, []);
   return (
     <div className="App">
@@ -82,8 +86,8 @@ function App() {
         <div style={{ fontSize: 30, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>내 지갑</div>
         {myAddress}
         <br />
-        <Alert onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#f40075", fontSize: 30 }}>
-          {myBalance} KLAY
+        <Alert onClick={getUserData} variant={"balance"} style={{ backgroundColor: "#f40075", fontSize: 25 }}>
+          {myAddress !== DEFAULT_ADDRESS ? `${myBalance} KLAY` : "여기를 눌러 지갑을 연동하세요"}
         </Alert>
         <div style={{ color: "#EEEEEE", fontSize: 25, fontWeight: "bold", paddingLeft: 5, marginTop: 10 }}>전체</div>
         {qrvalue !== "DEFAULT" ? (
@@ -95,7 +99,7 @@ function App() {
         {tab === "MARKET" || tab === "WALLET" ? (
           <div className="container" style={{ padding: 0, width: "100%" }}>
             {rows.map((o, rowIndex) => (
-              <Row>
+              <Row key={`row_${rowIndex}`}>
                 <Col style={{ marginRight: 0, paddingRight: 0 }}>
                   <Card
                     onClick={() => {
@@ -127,9 +131,9 @@ function App() {
         {/* MINT */}
         {tab === "MINT" ? (
           <div className="container" style={{ padding: 0, width: "100%" }}>
-            <Card className="text-center" style={{ color: "black", height: "50%" }}>
-              <Card.Header as="h5">NEW CARD</Card.Header>
-              <Card.Body>
+            <Card className="text-center" style={{ color: "black", height: "50%", borderColor: "#C5B358" }}>
+              {/* <Card.Header as="h5">NEW CARD</Card.Header> */}
+              <Card.Body style={{ opacity: 0.9, backgroundColor: "black" }}>
                 {mintImageUrl !== "" ? <Card.Img src={mintImageUrl} height={"50%"} /> : null}
                 <Form>
                   <Form.Group controlId="formBasicEmail">
@@ -142,13 +146,13 @@ function App() {
                       type="text"
                       placeholder="이미지 주소를 입력해주세요"
                     />
-                    <Form.Text className="text-muted">블록체인에 발행됩니다.</Form.Text>
                   </Form.Group>
                   <Button
                     onClick={() => {
                       onClickMint(mintImageUrl);
                     }}
                     variant="primary"
+                    style={{ backgroundColor: "#810034", borderColor: "#810034" }}
                   >
                     발행하기
                   </Button>
@@ -166,10 +170,10 @@ function App() {
             setShowModal(false);
           }}
         >
-          <Modal.Header closeButton>
-            <Modal.Title style={{ color: "black" }}>{modalProps.title}</Modal.Title>
+          <Modal.Header closeButton style={{ border: 0, backgroundColor: "black", opacity: 0.8 }}>
+            <Modal.Title>{modalProps.title}</Modal.Title>
           </Modal.Header>
-          <Modal.Footer>
+          <Modal.Footer style={{ border: 0, backgroundColor: "black", opacity: 0.8 }}>
             <Button
               variant="secondary"
               onClick={() => {
@@ -184,6 +188,7 @@ function App() {
                 modalProps.onConfirm();
                 setShowModal(false);
               }}
+              style={{ backgroundColor: "#810034", borderColor: "#810034" }}
             >
               진행
             </Button>

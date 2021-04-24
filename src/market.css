@@ -6,9 +6,8 @@
   column-count: 2;
 }
 .alert-balance {
-  height: 80px;
-  line-height: 2;
-  font-size: 30;
+  height: 60px;
+  line-height: 1.5;
   text-align: right;
   font-weight: bold;
 }
@@ -26,6 +25,5 @@
 
 .card:hover {
   transform: scale(0.9, 0.9);
-  box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
-    -5px -5px 30px 15px rgba(0, 0, 0, 0.22);
+  box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25), -5px -5px 30px 15px rgba(0, 0, 0, 0.22);
 }
