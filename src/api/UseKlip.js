@@ -2,9 +2,11 @@ import axios from "axios";
 import MARKET_ABI from "../abi/market.json";
 import NFT_ABI from "../abi/nft.json";
 import { NFT_CONTRACT_ADDRESS, MARKET_CONTRACT_ADDRESS, CHAIN_ID, ACCESS_KEY_ID, SECRET_ACCESS_KEY } from "../constants";
+
 const A2A_PREPARE_URL = "https://a2a-api.klipwallet.com/v2/a2a/prepare";
 const APP_NAME = "KLAY_MARKET";
 const isMobile = window.screen.width >= 1280 ? false : true;
+
 const getKlipAccessUrl = (method, request_key) => {
   if (method === "QR") {
     return `https://klipwallet.com/?target=/a2a?request_key=${request_key}`;
@@ -17,10 +19,12 @@ const getKlipAccessUrl = (method, request_key) => {
   }
   return `kakaotalk://klipwallet/open?url=https://klipwallet.com/?target=/a2a?request_key=${request_key}`;
 };
+
 export const listingCard = async (fromAddress, tokenId, setQrvalue, cb) => {
   const urijson = '{ "constant": false, "inputs": [ { "name": "from", "type": "address" }, { "name": "to", "type": "address" }, { "name": "tokenId", "type": "uint256" } ], "name": "safeTransferFrom", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }';
   executeContract(NFT_CONTRACT_ADDRESS, urijson, "0", `[\"${fromAddress}\",\"${MARKET_CONTRACT_ADDRESS}\",\"${tokenId}\"]`, setQrvalue, cb);
 };
+
 export const buyCard = async (tokenId, setQrvalue, cb) => {
   const urijson = '{ "constant": false, "inputs": [ { "name": "tokenId", "type": "uint256" }, { "name": "NFT", "type": "address" } ], "name": "buyNFT", "outputs": [ { "name": "", "type": "bool" } ], "payable": true, "stateMutability": "payable", "type": "function" }';
   executeContract(MARKET_CONTRACT_ADDRESS, urijson, "10000000000000000", `[\"${tokenId}\",\"${NFT_CONTRACT_ADDRESS}\"]`, setQrvalue, cb);
@@ -65,6 +69,7 @@ export const executeContract = (txTo, functionJson, value, params, setQrvalue, c
     })
     .catch((e) => console.log(`execute contract error ${e}`));
 };
+
 export const getAddress = (setQrvalue, cb) => {
   axios
     .post(A2A_PREPARE_URL, {
