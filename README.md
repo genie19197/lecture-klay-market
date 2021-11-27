@@ -12,6 +12,15 @@ Support following features from app UI:
 - Display user's NFTs on the market.
 - Buy other's NFTs.
 
+
+### Contracts
+KlayLion.sol
+- Used for lecture
+
+KIP17TokenModified.sol
+- Used for production mode
+
+
 ## Deplyoed Smart Contracts
 
 ---
